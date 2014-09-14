@@ -120,7 +120,7 @@ void remove( List<T> &l ){
 // f(n) = 1
 template<typename T>
 void removeBegin( List<T> &l ){
-    if( l.qtd == 0 )
+    if( l.qtd==0 )
         return;
     Element<T> * temp = l.first;
     l.first = l.first->next;

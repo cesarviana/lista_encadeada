@@ -40,10 +40,46 @@ void add( List<T> &l, T value ){
     l.qtd++;
 }
 
-// f(n) = ????
+// f(n) = n/2
 template<typename T>
 void add( List<T> &l, T value, unsigned int pos ){
+    if(pos>l.qtd)
+        return;
+    if(pos==0)
+        return addBegin( l, value );
+    if(pos==l.qtd)
+        return add(l,value);
 
+    Element<T> * elm = new Element<T>;
+    elm->value = value;
+
+    int i;
+    Element<T> * nav;
+    // last to first
+    if( l.qtd-pos < pos ){
+        nav=l.last;
+        i=l.qtd-1;
+        while( i > pos+1 ){
+            nav=nav->prev;
+            i--;
+        }
+        nav->prev->next = elm;
+        elm->prev=nav->prev;
+        elm->next=nav;
+        nav->prev=elm;
+    } else {
+        i=0;
+        nav=l.first;
+        while( i < pos-1 ){
+            nav=nav->next;
+            i++;
+        }
+        nav->next->prev = elm;
+        elm->next=nav->next;
+        elm->prev = nav;
+        nav->next=elm;
+    }
+    l.qtd++;
 }
 
 // f(n) = 1
@@ -61,6 +97,77 @@ void addBegin( List<T> &l, T value ){
     }
     l.first=elm;
     l.qtd++;
+}
+
+
+// f(n)=n/2
+template<typename T>
+void remove(List<T> &l, int pos ){
+    if(l.qtd==0)
+        return;
+    if(pos==0)
+        return removeBegin(l);
+    if(pos==l.qtd-1)
+        return remove(l);
+    Element<T> * nav;
+    Element<T> * temp;
+    int i;
+    if(l.qtd-pos < pos ){
+        i=l.qtd-1;
+        nav=l.last;
+        while(i > pos+1){
+            nav=nav->prev;
+            i--;
+        }
+        temp=nav->prev;
+        nav->prev=nav->prev->prev;
+        nav->prev->next=nav;
+    } else {
+        i=0;
+        nav=l.first;
+        while( i < pos-1 ){
+            nav=nav->next;
+            i++;
+        }
+        temp=nav->next;
+        nav->next=nav->next->next;
+        nav->next->prev=nav;
+    }
+    delete temp;
+    l.qtd--;
+}
+// f(n)=1
+template<typename T>
+void remove( List<T> &l ){
+    if(l.qtd>0){
+        Element<T> * temp = l.last;
+        l.last = l.last->prev;
+        delete temp;
+
+        if(l.qtd==1)
+            l.first = NULL;
+        else
+            l.last->next=NULL;
+
+        l.qtd--;
+    }
+}
+
+// f(n)=1
+template<typename T>
+void removeBegin( List<T> &l ){
+    if(l.qtd>0){
+        Element<T> * temp = l.first;
+        l.first = l.first->next;
+        delete temp;
+
+        if(l.qtd==1)
+            l.last = l.first;
+        else
+            l.first->prev=NULL;
+
+        l.qtd--;
+    }
 }
 
 #endif // LISTA_DUPLAMENTE_ENCADEADA_GENERECIA_H_INCLUDED
